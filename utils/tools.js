@@ -1,7 +1,149 @@
 const fs = require('fs');
+const inquirer = require('inquirer');
 
-// A function to generate markdown for README
+
+// Arrays of questions for user input to pass to inquirer object
+
+// Manager Questions for inquirer instance
+const questionsMgr = [
+    {
+        type: 'input',
+        message: 'Team Manager Name: ',
+        name: 'name',
+    },
+    {
+        type: 'input',
+        message: 'Employee ID: ',
+        name: 'id',
+    },
+    {
+        type: 'input',
+        message: 'Employee Email: ',
+        name: 'email',
+    },
+    {
+        type: 'input',
+        message: 'Manager Phone: ',
+        name: 'phone',
+    }
+]
+
+// Engineer Questions for inquirer instance
+const questionsEng = [
+    {
+        type: 'input',
+        message: 'Engineer Name: ',
+        name: 'name',
+    },
+    {
+        type: 'input',
+        message: 'Employee ID: ',
+        name: 'id',
+    },
+    {
+        type: 'input',
+        message: 'Employee Email: ',
+        name: 'email',
+    },
+    {
+        type: 'input',
+        message: 'Github Username: ',
+        name: 'gituser',
+    }
+];
+
+//Intern Questions for inquirer instance
+const questionsInt = [
+    {
+        type: 'input',
+        message: 'Intern Name: ',
+        name: 'name',
+    },
+    {
+        type: 'input',
+        message: 'Employee ID: ',
+        name: 'id',
+    },
+    {
+        type: 'input',
+        message: 'Employee Email: ',
+        name: 'email',
+    },
+    {
+        type: 'input',
+        message: 'Intern School: ',
+        name: 'school',
+    }
+];
+
+// Continue loop question.  Get employee type value if continuing, otherwise signal that we're done.
+const questionsCont = 
+
+    {
+        type: 'list',
+        name: 'nextemp',
+        message: 'Add another employee?',
+        choices: [
+            {value: 'ENG', name: "Engineer"},
+            {value: 'INT', name: "Intern"},
+            {value: 'done' , name: "Done"},
+            
+          ]
+        ,
+    }
+
+// append last continue question to each question set.
+questionsMgr.push(questionsCont);
+questionsEng.push(questionsCont);
+questionsInt.push(questionsCont);
+
+// prompt user for employee data. 
+// initial call should be 'MGR'
+// recursive call appends previous array of objects to each call
+// when done, recursive return the array of objects from prompts
+const getAnswers = async(employeeType, employees = [])=> {
+    let questions = [];
+    let answers = [];
+    switch(employeeType){
+        case 'MGR': 
+            questions = questionsMgr;
+            break;
+        case 'ENG':
+            questions = questionsEng;
+            break;
+        case 'INT':
+            questions = questionsInt;
+            break;
+        default:
+            done = true;
+            break;
+    }
+    // prompt the user for employee data and optional 'add another employee'
+    // and wait for the result
+    answers = await inquirer.prompt(questions);
+
+    // add employee type
+    answers.type = employeeType;
+
+    // append the answers to the previous cycle's inputs
+    employees.push(answers);
+    
+    // if we're not done, then recursive call to the function again
+    if (answers.nextemp !== 'done'){
+        return getAnswers(answers.nextemp, employees);
+    } 
+    // else, we're done, return the whole lot.
+    else{
+        return  employees;
+    }
+
+}
+
+
+// A function to generate HTML for Team Page
 const htmlGenerator = async (data) => {
+
+
     function Employee (type, name, id, email){
         this.type = type;
         this.name = name;
@@ -9,6 +151,7 @@ const htmlGenerator = async (data) => {
         this.email = email;
     }
 
+    // parse our inquirer prompt input and store in employees object array
     let employees = [];
     for (let i=0; i<data.length; i++){
         employees[i] = new Employee(data[i].type, data[i].name, data[i].id, data[i].email);
@@ -26,7 +169,9 @@ const htmlGenerator = async (data) => {
                 break;
         }
     }
-    //html string helper functions
+
+    //html string helper functions to dynamically build the header and contact footer
+    //  based on employee type
     function getHeader(type, name){
         let returnString = ""
         switch(type){
@@ -47,10 +192,10 @@ const htmlGenerator = async (data) => {
         let returnString = ""
         switch(type){
             case 'MGR':
-                returnString = `<p class="card-text">Phone: <span class="font-weight-bold"><a href="tel:${obj.phone}">${obj.phone}</a></span></p>`;
+                returnString = `<p class="card-text">Phone: <span class="font-weight-bold"><a href="tel:${obj.phone}" target="_blank">${obj.phone}</a></span></p>`;
                 break;
             case 'ENG':
-                returnString = `<p class="card-text">Github: <span class="font-weight-bold"> <a href="https://github.com/${obj.gituser}">${obj.gituser}</a></span></p>`;
+                returnString = `<p class="card-text">Github: <span class="font-weight-bold"> <a href="https://github.com/${obj.gituser}" target="_blank">${obj.gituser}</a></span></p>`;
                 break;
             case 'INT':
                 returnString = `<p class="card-text">School: <span class="font-weight-bold">${obj.school}</span></p>`;
@@ -81,7 +226,7 @@ const htmlGenerator = async (data) => {
                 ${getHeader(employees[i].type, employees[i].name)}
             </div>
             <p class="card-text">Employee ID: <span class="font-weight-bold"> ${employees[i].id}</span></p>
-            <p class="card-text">Email: <span class="font-weight-bold"> <a href="mailto:${employees[i].email}">${employees[i].email}</a></span></p>
+            <p class="card-text">Email: <span class="font-weight-bold"> <a href="mailto:${employees[i].email}" target="_blank">${employees[i].email}</a></span></p>
             ${getFooter(employees[i].type, employees[i])}
         </div>
     </div>`;
@@ -90,7 +235,7 @@ const htmlGenerator = async (data) => {
     </section>
     </main>
     <footer class="text-center text-lg-start bg-light text-muted navbar fixed-bottom" style="background-color: rgba(0, 0, 0, 0.05);">
-        <p style="align-items:center;width:100%;"> © 2022 Copyright - This team!</p>
+        <p style="align-items:center;width:100%;"> © 2022 Copyright - GO team!</p>
     </footer>
  </body>
 </html>
@@ -101,6 +246,7 @@ const htmlGenerator = async (data) => {
     
 }
 
+// write to file to store the html string and generate an html doc.
 const writeFile = async (data, filename) => {
     let fileDir = 'html/';
     fileName = fileDir + filename;
@@ -114,97 +260,10 @@ const writeFile = async (data, filename) => {
 }
 
 
-// Arrays of questions for user input to pass to inquirer object
-// continue the loop question to be appended to all question object arrays for prompt.
-const questionsCont = 
 
-    {
-        type: 'list',
-        name: 'nextemp',
-        message: 'Add another employee?',
-        choices: [
-            {value: 'ENG', name: "Engineer"},
-            {value: 'INT', name: "Intern"},
-            {value: 'done' , name: "Done"},
-            
-          ]
-        ,
-    }
 
-// Manager Questions
-const questionsMgr = [
-    {
-        type: 'input',
-        message: 'Team Manager Name: ',
-        name: 'name',
-    },
-    {
-        type: 'input',
-        message: 'Employee ID: ',
-        name: 'id',
-    },
-    {
-        type: 'input',
-        message: 'Employee Email: ',
-        name: 'email',
-    },
-    {
-        type: 'input',
-        message: 'Manager Phone: ',
-        name: 'phone',
-    }
-]
 
-// Engineer Questions
-const questionsEng = [
-    {
-        type: 'input',
-        message: 'Engineer Name: ',
-        name: 'name',
-    },
-    {
-        type: 'input',
-        message: 'Employee ID: ',
-        name: 'id',
-    },
-    {
-        type: 'input',
-        message: 'Employee Email: ',
-        name: 'email',
-    },
-    {
-        type: 'input',
-        message: 'Github Username: ',
-        name: 'gituser',
-    }
-];
 
-//Intern Questions
-const questionsInt = [
-    {
-        type: 'input',
-        message: 'Intern Name: ',
-        name: 'name',
-    },
-    {
-        type: 'input',
-        message: 'Employee ID: ',
-        name: 'id',
-    },
-    {
-        type: 'input',
-        message: 'Employee Email: ',
-        name: 'email',
-    },
-    {
-        type: 'input',
-        message: 'Intern School: ',
-        name: 'school',
-    }
-];
-questionsMgr.push(questionsCont);
-questionsEng.push(questionsCont);
-questionsInt.push(questionsCont);
 
 
 
@@ -213,7 +272,5 @@ questionsInt.push(questionsCont);
 module.exports = {
     htmlGenerator,
     writeFile,
-    questionsMgr,
-    questionsEng,
-    questionsInt
+    getAnswers
   };
