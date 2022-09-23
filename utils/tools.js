@@ -26,11 +26,76 @@ const htmlGenerator = async (data) => {
                 break;
         }
     }
-    let htmlString = "<html><body>";
-    for (let i=0; i<employees.length; i++){
-        htmlString += `<h2>${employees[i].name}</h2>`;
-        htmlString += `<h3>${employees[i].type}</h3>`;
+    //html string helper functions
+    function getHeader(type, name){
+        let returnString = ""
+        switch(type){
+            case 'MGR':
+                returnString = `<img class="" src="img/coffee.gif" style="max-height:30px;" alt="Drinking Coffee"/> <span class="font-weight-bold h5" >Manager</span>`;
+                break;
+            case 'ENG':
+                returnString = `<img class="" src="../html/img/glasses.png" style="max-height:30px; " alt="Total NERD!"/> <span class="font-weight-bold h5" >Engineer</span>`;
+                break;
+            case 'INT':
+                returnString = `<img class="" src="../html/img/student.png" style="max-height:30px; " alt="Intern Student"/> <span class="font-weight-bold h5" >Intern</span>`;
+                break;
+        }
+        returnString += `<h4 class="card-title">${name}</h4>`;
+        return returnString;
     }
+    function getFooter(type, obj){
+        let returnString = ""
+        switch(type){
+            case 'MGR':
+                returnString = `<p class="card-text">Phone: <span class="font-weight-bold"><a href="tel:${obj.phone}">${obj.phone}</a></span></p>`;
+                break;
+            case 'ENG':
+                returnString = `<p class="card-text">Github: <span class="font-weight-bold"> <a href="https://github.com/${obj.gituser}">${obj.gituser}</a></span></p>`;
+                break;
+            case 'INT':
+                returnString = `<p class="card-text">School: <span class="font-weight-bold">${obj.school}</span></p>`;
+                break;
+        }
+        return returnString;
+    }
+    let htmlString = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+</head>
+<body>
+    <main class="d-flex flex-wrap">
+    <section class="jumbotron d-flex flex-column col-12 text-center" style="color:#FFF; background-image: linear-gradient(to right, rgb(62, 111, 192),rgb(38,19,94) );">
+        <h1 class="title">Team Page</h1>
+    </section>
+    <section class="mx-auto row" style="">`;
+    for (let i=0; i<employees.length; i++){
+        htmlString += `<div class="card col-lg-2 col-md-6 col-sm-6 m-2 p-0" style="min-width:300px;">
+        <div class="card-body border border-info">
+            <div class="mb-2 bg-light">
+                ${getHeader(employees[i].type, employees[i].name)}
+            </div>
+            <p class="card-text">Employee ID: <span class="font-weight-bold"> ${employees[i].id}</span></p>
+            <p class="card-text">Email: <span class="font-weight-bold"> <a href="mailto:${employees[i].email}">${employees[i].email}</a></span></p>
+            ${getFooter(employees[i].type, employees[i])}
+        </div>
+    </div>`;
+    }
+    htmlString+=`
+    </section>
+    </main>
+    <footer class="text-center text-lg-start bg-light text-muted navbar fixed-bottom" style="background-color: rgba(0, 0, 0, 0.05);">
+        <p style="align-items:center;width:100%;"> © 2022 Copyright - This team!</p>
+    </footer>
+ </body>
+</html>
+    `;
+
     return htmlString;
 
     
