@@ -14,7 +14,7 @@ const init = async () => {
     //write HTML file
     const fileWritten = await writeFile(htmlString, "team.html");
     
-    //
+    // finish program and return true or false confirmation.
     return fileWritten;
 }
 

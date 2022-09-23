@@ -97,6 +97,14 @@ questionsMgr.push(questionsCont);
 questionsEng.push(questionsCont);
 questionsInt.push(questionsCont);
 
+// Employee function object construction.
+function Employee (type, name, id, email){
+    this.type = type;
+    this.name = name;
+    this.id = id;
+    this.email = email;
+}
+
 // prompt user for employee data. 
 // initial call should be 'MGR'
 // recursive call appends previous array of objects to each call
@@ -143,14 +151,6 @@ const getAnswers = async(employeeType, employees = [])=> {
 // A function to generate HTML for Team Page
 const htmlGenerator = async (data) => {
 
-
-    function Employee (type, name, id, email){
-        this.type = type;
-        this.name = name;
-        this.id = id;
-        this.email = email;
-    }
-
     // parse our inquirer prompt input and store in employees object array
     let employees = [];
     for (let i=0; i<data.length; i++){
@@ -170,8 +170,9 @@ const htmlGenerator = async (data) => {
         }
     }
 
-    //html string helper functions to dynamically build the header and contact footer
-    //  based on employee type
+    // html string helper functions getHeader and getFooter
+    //   to dynamically build the header and contact footer
+    //   based on employee type
     function getHeader(type, name){
         let returnString = ""
         switch(type){
@@ -188,6 +189,8 @@ const htmlGenerator = async (data) => {
         returnString += `<h4 class="card-title">${name}</h4>`;
         return returnString;
     }
+
+    
     function getFooter(type, obj){
         let returnString = ""
         switch(type){
@@ -203,6 +206,8 @@ const htmlGenerator = async (data) => {
         }
         return returnString;
     }
+
+    //lets build that html string
     let htmlString = `
 <!DOCTYPE html>
 <html lang="en">
@@ -219,6 +224,8 @@ const htmlGenerator = async (data) => {
         <h1 class="title">Team Page</h1>
     </section>
     <section class="mx-auto row" style="">`;
+    
+    // loop through the employees array object and output a card for each.
     for (let i=0; i<employees.length; i++){
         htmlString += `<div class="card col-lg-2 col-md-6 col-sm-6 m-2 p-0" style="min-width:300px;">
         <div class="card-body border border-info">
@@ -231,6 +238,8 @@ const htmlGenerator = async (data) => {
         </div>
     </div>`;
     }
+
+    //add the footer
     htmlString+=`
     </section>
     </main>
@@ -241,6 +250,7 @@ const htmlGenerator = async (data) => {
 </html>
     `;
 
+    // return the html string
     return htmlString;
 
     
@@ -248,27 +258,28 @@ const htmlGenerator = async (data) => {
 
 // write to file to store the html string and generate an html doc.
 const writeFile = async (data, filename) => {
+
+    // set the directory 
     let fileDir = 'html/';
+
+    // append that to the filename
     fileName = fileDir + filename;
+
      // first clear out the old file
     fs.writeFile(fileName, '', ()=>{})
+    
+    // write our data to the cleared out file.
     fs.appendFile(fileName, data, (err) =>
+
     // Ternary operator to log an error or success.
-   err ? console.error(err) : console.log('\x0A\x0AYour HTML Team Page team.html is ready in /html directory!\x0A\x0A')
+    err ? console.error(err) : console.log('\x0A\x0AYour HTML Team Page team.html is ready in /html directory!\x0A\x0A')
    );
+
     return true;
 }
 
 
-
-
-
-
-
-
-
-
-
+//export our functions
 module.exports = {
     htmlGenerator,
     writeFile,
