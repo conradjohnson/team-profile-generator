@@ -1,5 +1,9 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
+const Manager = require('../lib/manager');
+const Engineer = require('../lib/engineer');
+const Intern = require('../lib/intern')
+
 
 
 // Arrays of questions for user input to pass to inquirer object
@@ -23,8 +27,8 @@ const questionsMgr = [
     },
     {
         type: 'input',
-        message: 'Manager Phone: ',
-        name: 'phone',
+        message: 'Manager Office Num: ',
+        name: 'office',
     }
 ]
 
@@ -157,13 +161,13 @@ const htmlGenerator = async (data) => {
         employees[i] = new Employee(data[i].type, data[i].name, data[i].id, data[i].email);
         switch (data[i].type) {
             case 'MGR':
-                employees[i].phone = data[i].phone;
+                employees[i] = new Manager(data[i].type, data[i].name, data[i].id, data[i].email, data[i].office)
                 break;
             case 'ENG':
-                employees[i].gituser = data[i].gituser;
+                employees[i] = new Engineer(data[i].type, data[i].name, data[i].id, data[i].email, data[i].gituser)    
                 break;
             case 'INT':
-                employees[i].school = data[i].school;
+                employees[i] = new Intern(data[i].type, data[i].name, data[i].id, data[i].email, data[i].school)
                 break;
             default:
                 break;
@@ -173,7 +177,7 @@ const htmlGenerator = async (data) => {
     // html string helper functions getHeader and getFooter
     //   to dynamically build the header and contact footer
     //   based on employee type
-    function getHeader(type, name){
+    function getCardHeader(type, name){
         let returnString = ""
         switch(type){
             case 'MGR':
@@ -191,7 +195,7 @@ const htmlGenerator = async (data) => {
     }
 
     
-    function getFooter(type, obj){
+    function getCardFooter(type, obj){
         let returnString = ""
         switch(type){
             case 'MGR':
@@ -209,45 +213,45 @@ const htmlGenerator = async (data) => {
 
     //lets build that html string
     let htmlString = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Page</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
-</head>
-<body>
-    <main class="d-flex flex-wrap">
-    <section class="jumbotron d-flex flex-column col-12 text-center" style="color:#FFF; background-image: linear-gradient(to right, rgb(62, 111, 192),rgb(38,19,94) );">
-        <h1 class="title">Team Page</h1>
-    </section>
-    <section class="mx-auto row" style="">`;
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Team Page</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"/>
+    </head>
+    <body>
+        <main class="d-flex flex-wrap">
+        <section class="jumbotron d-flex flex-column col-12 text-center" style="color:#FFF; background-image: linear-gradient(to right, rgb(62, 111, 192),rgb(38,19,94) );">
+            <h1 class="title">Team Page</h1>
+        </section>
+        <section class="mx-auto row" style="">`;
     
     // loop through the employees array object and output a card for each.
     for (let i=0; i<employees.length; i++){
         htmlString += `<div class="card col-lg-2 col-md-6 col-sm-6 m-2 p-0" style="min-width:300px;">
         <div class="card-body border border-info">
             <div class="mb-2 bg-light">
-                ${getHeader(employees[i].type, employees[i].name)}
+                ${getCardHeader(employees[i].type, employees[i].name)}
             </div>
             <p class="card-text">Employee ID: <span class="font-weight-bold"> ${employees[i].id}</span></p>
             <p class="card-text">Email: <span class="font-weight-bold"> <a href="mailto:${employees[i].email}" target="_blank">${employees[i].email}</a></span></p>
-            ${getFooter(employees[i].type, employees[i])}
+            ${getCardFooter(employees[i].type, employees[i])}
         </div>
     </div>`;
     }
 
     //add the footer
-    htmlString+=`
+    htmlString+= `
     </section>
     </main>
     <footer class="text-center text-lg-start bg-light text-muted navbar fixed-bottom" style="background-color: rgba(0, 0, 0, 0.05);">
         <p style="align-items:center;width:100%;"> © 2022 Copyright - GO team!</p>
     </footer>
- </body>
-</html>
+    </body>
+    </html>
     `;
 
     // return the html string
@@ -260,7 +264,7 @@ const htmlGenerator = async (data) => {
 const writeFile = async (data, filename) => {
 
     // set the directory 
-    let fileDir = 'html/';
+    let fileDir = 'dist/';
 
     // append that to the filename
     fileName = fileDir + filename;
@@ -272,7 +276,7 @@ const writeFile = async (data, filename) => {
     fs.appendFile(fileName, data, (err) =>
 
     // Ternary operator to log an error or success.
-    err ? console.error(err) : console.log('\x0A\x0AYour HTML Team Page team.html is ready in /html directory!\x0A\x0A')
+    err ? console.error(err) : console.log('\x0A\x0AYour HTML Team Page team.html is ready in /dist directory!\x0A\x0A')
    );
 
     return true;

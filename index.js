@@ -1,6 +1,6 @@
-const { htmlGenerator } = require('./utils/tools');
-const { writeFile } = require('./utils/tools');
-const { getAnswers } = require('./utils/tools');
+const { htmlGenerator } = require('./src/tools');
+const { writeFile } = require('./src/tools');
+const { getAnswers } = require('./src/tools');
 
 
 const init = async () => {
