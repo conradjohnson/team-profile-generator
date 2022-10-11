@@ -13,6 +13,7 @@ A tool that allows a business owner to generate a team page for their company.  
 
 ## Table of Contents
 
+- [Demo and Screen Shots](#demo)
 - [Installation](#installation)
 - [Usage](#usage)
 - [Testing](#testing)
@@ -20,7 +21,16 @@ A tool that allows a business owner to generate a team page for their company.  
 - [License](#license)
 - [Questions](#questions)
 
+## Demo
+***
 
+Demo:
+
+![Demo Video](img/demo.gif)
+
+Screen Shot:
+
+![Screen Shot](img/screen1.png)
 
 ## Installation
 ***

@@ -184,10 +184,10 @@ const htmlGenerator = async (data) => {
                 returnString = `<img class="" src="img/coffee.gif" style="max-height:30px;" alt="Drinking Coffee"/> <span class="font-weight-bold h5" >Manager</span>`;
                 break;
             case 'ENG':
-                returnString = `<img class="" src="../html/img/glasses.png" style="max-height:30px; " alt="Total NERD!"/> <span class="font-weight-bold h5" >Engineer</span>`;
+                returnString = `<img class="" src="img/glasses.png" style="max-height:30px; " alt="Total NERD!"/> <span class="font-weight-bold h5" >Engineer</span>`;
                 break;
             case 'INT':
-                returnString = `<img class="" src="../html/img/student.png" style="max-height:30px; " alt="Intern Student"/> <span class="font-weight-bold h5" >Intern</span>`;
+                returnString = `<img class="" src="img/student.png" style="max-height:30px; " alt="Intern Student"/> <span class="font-weight-bold h5" >Intern</span>`;
                 break;
         }
         returnString += `<h4 class="card-title">${name}</h4>`;
@@ -199,10 +199,10 @@ const htmlGenerator = async (data) => {
         let returnString = ""
         switch(type){
             case 'MGR':
-                returnString = `<p class="card-text">Phone: <span class="font-weight-bold"><a href="tel:${obj.phone}" target="_blank">${obj.phone}</a></span></p>`;
+                returnString = `<p class="card-text">Office: <span class="font-weight-bold">${obj.office}</span></p>`;
                 break;
             case 'ENG':
-                returnString = `<p class="card-text">Github: <span class="font-weight-bold"> <a href="https://github.com/${obj.gituser}" target="_blank">${obj.gituser}</a></span></p>`;
+                returnString = `<p class="card-text">Github: <span class="font-weight-bold"> <a href="https://github.com/${obj.github}" target="_blank">${obj.github}</a></span></p>`;
                 break;
             case 'INT':
                 returnString = `<p class="card-text">School: <span class="font-weight-bold">${obj.school}</span></p>`;
