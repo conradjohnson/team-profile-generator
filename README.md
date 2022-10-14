@@ -1,6 +1,6 @@
 
  [![Github All Releases](https://img.shields.io/github/downloads/conradjohnson/team-profile-generator/total.svg)]()
- [![GitHub version](https://badge.fury.io/gh/conradjohnson%2Fteam-profile-generator.svg)](https://github.com/Naereen/team-profile-generator)
+ [![GitHub version](https://badge.fury.io/gh/conradjohnson%2Fteam-profile-generator.svg)](https://github.com/conradjohnson/team-profile-generator)
 
 
 # Team Profile HTML Generator
